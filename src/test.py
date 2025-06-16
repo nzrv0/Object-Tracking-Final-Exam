@@ -28,7 +28,7 @@ model.load_state_dict(
 )
 model.eval()
 
-data = dataset[1]
+data = dataset[2]
 
 image, gt_boxes, labels, gt_labels = (
     data["image"],
@@ -44,11 +44,12 @@ gt_boxes = gt_boxes.squeeze(0)
 
 def visualise(image):
     image = image[None, :]
-    rpn, roi = model(image, gt_boxes, gt_labels)
-    max_el = torch.sort(roi["scores"] * 100, dim=0, descending=False)[1][:5]
+    rpn, roi = model(image, gt_labels, gt_boxes)
+    max_el = torch.sort(roi["scores"] * 100, dim=0, descending=True)[1][:3]
+
     drawn_boxes = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
-        roi["boxes"].detach().cpu(),
+        roi["boxes"][max_el].detach().cpu(),
         colors="red",
         width=1,
     )

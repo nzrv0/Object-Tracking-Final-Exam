@@ -1,5 +1,6 @@
 from model import FasterRcnn
 from dataset import ObjectDataset
+from pascal_dataset import VOCDataset
 from helpers import get_path, get_device
 
 import torch
@@ -16,7 +17,14 @@ def load_dataset():
     image_path = "training"
     box_path = "data_object_label_2"
     # shuffle true in the colab
-    traning_data = DataLoader(ObjectDataset(image_path, box_path), batch_size=1)
+    # traning_data = DataLoader(ObjectDataset(image_path, box_path), batch_size=1)
+    traning_data = DataLoader(
+        VOCDataset(
+            "train", "VOCdevkit/VOC20012/JPEGImages", "VOCdevkit/VOC20012/Annotations"
+        ),
+        batch_size=1,
+    )
+
     return traning_data
 
 
@@ -28,7 +36,6 @@ def load_model():
     return model, optim, scheduler
 
 
-"""EDIT THIS BEFORE UPLOADING TO COLAB"""
 if __name__ == "__main__":
     dataset = load_dataset()
     rpn_cls_losses = []
