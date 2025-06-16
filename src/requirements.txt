@@ -1,0 +1,12 @@
+# streamlit
+# setuptools
+matplotlib
+# numpy
+# opencv_python
+# pandas
+# Pillow
+torch==2.7.0 --find-links https://download.pytorch.org/whl/cpu
+torchsummary==1.5.1
+torchvision==0.22.0
+# tqdm
+

@@ -1,0 +1,96 @@
+#Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+*.env
+*.venv
+
+# PyTorch model checkpoints
+*.pt
+*.pth
+checkpoints/
+models/
+src/models
+training/
+videos/
+label_2/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Logs and outputs
+*.log
+*.out
+*.err
+*.csv
+*.tsv
+*.json
+*.h5
+*.ckpt
+*.onnx
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Datasets or large data files
+data/
+datasets/
+src/TUSimple/
+src/weights/
+*.zip
+*.tar
+*.gz
+*.npy
+*.npz
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Spyder
+.spyderproject
+.spyproject
+
+# MyPy
+.mypy_cache/
+
+# PyTest
+.cache/
+
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# TensorBoard
+runs/
+
+# Other experiment tracking (e.g., Weights & Biases)
+wandb/
+mlruns/
+
+# Environment configuration
+.env
+.env.*
+
+# Misc
+*.sqlite3
+
