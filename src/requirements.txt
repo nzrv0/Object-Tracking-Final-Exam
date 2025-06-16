@@ -1,5 +1,6 @@
 # streamlit
 # setuptools
+huggingface_hub
 matplotlib
 # numpy
 # opencv_python
