@@ -52,7 +52,8 @@ class RegionProposalNetwork(nn.Module):
         scores = torch.sigmoid(scores)
 
         # selecting only top 10_000 scores, original paper applies 6000
-        topk_values, topk_idx = torch.topk(scores, 6000)
+        sc = min(len(scores), 6000)
+        topk_values, topk_idx = torch.topk(scores, sc)
         scores = scores[topk_idx]
         preds = preds[topk_idx]
 
@@ -150,7 +151,7 @@ class RegionProposalNetwork(nn.Module):
             box_pred_transform.detach().reshape(-1, 1, 4), anchors
         )
         preds = preds.reshape(-1, 4)
-
+        
         preds, scores = self.filter_proposals(
             preds, objectness_scores.detach(), image_shape
         )
@@ -165,7 +166,7 @@ class RegionProposalNetwork(nn.Module):
 
             # transform matched anchors foregorund anchors from format x1, y1, x2, y2, to x, y, w, h
             regression_targets = boxes_to_targets(matched_gt_boxes, anchors)
-            
+
             # random sampling as positive and negative
             mask_neg_idx, mask_pos_idx = sample_pos_neg(labels, 128, 256)
 

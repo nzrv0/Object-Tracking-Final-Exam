@@ -15,7 +15,7 @@ class FasterRcnn(nn.Module):
         super().__init__()
         self.feature_extractor = FeatureExtractor()
         self.rpn = RegionProposalNetwork(512)
-        self.roi = ROI(4)
+        self.roi = ROI(21)
 
     def normalize(self, image, gt_boxes=None):
         min_size = 600

@@ -38,11 +38,10 @@ class VOCDataset(Dataset):
             "tvmonitor",
         ]
         classes = sorted(classes)
-        # classes = ["background"] + classes
+        classes = ["background"] + classes
         self.label2idx = {classes[idx]: idx for idx in range(len(classes))}
         self.idx2label = {idx: classes[idx] for idx in range(len(classes))}
         self.images_info = self.load_images_and_anns(im_dir, ann_dir, self.label2idx)
-        print(len(self.images_info))
 
     def load_images_and_anns(self, im_dir, ann_dir, label2idx):
         im_infos = []
@@ -63,6 +62,7 @@ class VOCDataset(Dataset):
 
             for obj in ann_info.findall("object"):
                 det = {}
+
                 label = label2idx[obj.find("name").text]
                 bbox_info = obj.find("bndbox")
                 bbox = [
@@ -107,7 +107,7 @@ class VOCDataset(Dataset):
         return {
             "image": im_tensor,
             "cords": box_cords,
-            "labels": "",
+            "labels": self.idx2label,
             "gt_labels": categories,
         }
 
@@ -115,15 +115,15 @@ class VOCDataset(Dataset):
 # batch = VOCDataset(
 #     "train", "VOCdevkit/VOC2012/JPEGImages", "VOCdevkit/VOC2012/Annotations"
 # )[0]
-from torch.utils.data import DataLoader
+# from torch.utils.data import DataLoader
 
-traning_data = DataLoader(
-    VOCDataset(
-        "train", "VOCdevkit/VOC20012/JPEGImages", "VOCdevkit/VOC20012/Annotations"
-    ),
-    batch_size=1,
-    shuffle=True,
-)
+# traning_data = DataLoader(
+#     VOCDataset(
+#         "train", "VOCdevkit/VOC20012/JPEGImages", "VOCdevkit/VOC20012/Annotations"
+#     ),
+#     batch_size=1,
+#     shuffle=True,
+# )
 # image, gt_boxes, labels, gt_labels = (
 #     batch["image"],
 #     batch["cords"],

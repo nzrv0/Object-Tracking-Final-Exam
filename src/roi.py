@@ -14,9 +14,6 @@ class ROI(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
 
-        # including bacgkround
-        # num_classes = num_classes + 1
-
         # roi layers
         self.fully_connected_layer = nn.Sequential(
             nn.Linear(in_features=512 * 7 * 7, out_features=1024),

@@ -79,24 +79,24 @@ if __name__ == "__main__":
             optim.step()
             optim.zero_grad()
 
-        torch.save(model.state_dict(), f"model{epoch}")
+        # torch.save(model.state_dict(), f"model{epoch}")
 
-        # optim.step()
-        # optim.zero_grad()
+        # # optim.step()
+        # # optim.zero_grad()
 
-        loss_output = ""
-        loss_output += "RPN Classification Loss : {:.4f}".format(
-            np.mean(rpn_cls_losses)
-        )
-        loss_output += " | RPN Localization Loss : {:.4f}".format(
-            np.mean(rpn_reg_losses)
-        )
-        loss_output += " | FRCNN Classification Loss : {:.4f}".format(
-            np.mean(roi_cls_losses)
-        )
-        loss_output += " | FRCNN Localization Loss : {:.4f}".format(
-            np.mean(roi_reg_losses)
-        )
-        print(loss_output)
+        # loss_output = ""
+        # loss_output += "RPN Classification Loss : {:.4f}".format(
+        #     np.mean(rpn_cls_losses)
+        # )
+        # loss_output += " | RPN Localization Loss : {:.4f}".format(
+        #     np.mean(rpn_reg_losses)
+        # )
+        # loss_output += " | FRCNN Classification Loss : {:.4f}".format(
+        #     np.mean(roi_cls_losses)
+        # )
+        # loss_output += " | FRCNN Localization Loss : {:.4f}".format(
+        #     np.mean(roi_reg_losses)
+        # )
+        # print(loss_output)
 
         scheduler.step()
