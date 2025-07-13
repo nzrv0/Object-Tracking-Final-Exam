@@ -76,7 +76,7 @@ def show_boxes(image_path):
     import os
 
     font = os.path.abspath("app/static/Roboto_SemiCondensed-Medium.ttf")
-
+    print(font, flush=True)
     rpn_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
         rpn["proposals"].detach().cpu(),
