@@ -73,7 +73,7 @@ def show_boxes(image_path):
     labels = labels[roi_labels]
     labels = [labels] if isinstance(labels, str) else labels
 
-    font = "app/static/Roboto_SemiCondensed-Medium.ttf"
+    font = "https://object-tracking-final-exam.streamlit.app/app/static/Roboto_SemiCondensed-Medium.ttf"
 
     rpn_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
