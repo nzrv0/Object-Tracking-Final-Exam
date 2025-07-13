@@ -145,6 +145,7 @@ class ROI(nn.Module):
 
         output = {}
         if self.training and gt_boxes is not None and gt_labels is not None:
+            labels = labels.squeeze(1)
             classification_loss = cross_entropy(cls_scores, labels)
 
             # Compute loss only for foreground

@@ -20,7 +20,7 @@ def load_dataset():
     # traning_data = DataLoader(ObjectDataset(image_path, box_path), batch_size=1)
     traning_data = DataLoader(
         VOCDataset(
-            "train", "VOCdevkit/VOC20012/JPEGImages", "VOCdevkit/VOC20012/Annotations"
+            "train", "VOCdevkit/VOC2012/JPEGImages", "VOCdevkit/VOC2012/Annotations"
         ),
         batch_size=1,
     )
@@ -36,13 +36,30 @@ def load_model():
     return model, optim, scheduler
 
 
+def accuracy(image, gt_labels, gt_boxes):
+    from torchmetrics.detection.mean_ap import MeanAveragePrecision
+    from helpers import iou_calc
+
+    model = FasterRcnn().to(device)
+    model.eval()
+
+    _, roi = model(image, gt_labels, gt_boxes)
+    mean_avg_precisioun = MeanAveragePrecision()
+    print(gt_labels)
+    mean_avg_precisioun.update(
+        [roi], [dict(boxes=gt_boxes, labels=gt_labels[: gt_boxes.shape[0]])]
+    )
+
+    return mean_avg_precisioun.compute()
+
+
 if __name__ == "__main__":
     dataset = load_dataset()
     rpn_cls_losses = []
     rpn_reg_losses = []
     roi_cls_losses = []
     roi_reg_losses = []
-
+    accuracies = []
     model, optim, scheduler = load_model()
 
     epochs = 20
@@ -56,17 +73,20 @@ if __name__ == "__main__":
                 batch["labels"],
                 batch["gt_labels"],
             )
-
             gt_labels = torch.tensor(gt_labels)
 
             gt_boxes = gt_boxes.squeeze(0)
             rpn, roi = model(image, gt_labels, gt_boxes)
+            accuracy_output = accuracy(image, gt_labels, gt_boxes)
+            print(accuracy_output)
 
             rpn_reg_loss, rpn_cls_loss = rpn["reg_loss"], rpn["cls_loss"]
             roi_reg_loss, roi_cls_loss = (
                 roi["localizaiton_loss"],
                 roi["classificaiton_loss"],
             )
+
+            accuracies.append(accuracy_output)
             rpn_cls_losses.append(rpn_cls_loss.item())
             rpn_reg_losses.append(rpn_reg_loss.item())
             roi_cls_losses.append(roi_cls_loss.item())

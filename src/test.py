@@ -1,15 +1,18 @@
 from dataset import ObjectDataset
 from pascal_dataset import VOCDataset
-
 from model import FasterRcnn
 from helpers import get_path
-import matplotlib.pyplot as plt
 
-from torchvision.utils import draw_bounding_boxes
-import torchvision.transforms.functional as F
+import os
+
+import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image
 
 import torch
+from torchvision.utils import draw_bounding_boxes
+import torchvision.transforms.functional as F
+from torchvision import transforms as T
 
 
 image_path = "training"
@@ -26,7 +29,7 @@ model_path = get_path("models")
 
 model.load_state_dict(
     torch.load(
-        model_path / "model4.pth",
+        model_path / "model19.pth",
         weights_only=True,
         map_location=torch.device("cpu"),
     )
@@ -46,33 +49,68 @@ gt_labels = torch.tensor(gt_labels)
 
 gt_boxes = gt_boxes.squeeze(0)
 
+# torch.autograd.set_detect_anomaly(True)
 
-def visualise(image):
+
+def visualise(image=None):
+    labels = [
+        "person",
+        "bird",
+        "cat",
+        "cow",
+        "dog",
+        "horse",
+        "sheep",
+        "aeroplane",
+        "bicycle",
+        "boat",
+        "bus",
+        "car",
+        "motorbike",
+        "train",
+        "bottle",
+        "chair",
+        "diningtable",
+        "pottedplant",
+        "sofa",
+        "tvmonitor",
+        "background",
+    ]
+    labels = sorted(labels)
+
+    image_path = get_path("training") / "image_2"
+    images = os.listdir(image_path)
+    image = Image.open(image_path / images[-3]).convert("RGB")
+
+    image = T.ToTensor()(image)
+
     image = image[None, :]
-    rpn, roi = model(image, gt_labels, gt_boxes)
-    # max_el = torch.sort(roi["scores"] * 100, dim=0, descending=True)[1][:40]
+
+    rpn, roi = model(image)
+    max_el = torch.where(roi["scores"] * 100 >= 10)
+
     roi_labels = roi["labels"].detach().cpu().numpy()
-    roi_ll = np.zeros(roi_labels.shape, dtype=object)
+    labels = np.array(labels)
+    labels = labels[roi_labels]
+    print(roi["boxes"][max_el].detach().cpu())
+    # roi_ll = np.zeros(roi_labels.shape, dtype=object)
+
     # for key in labels:
     #     roi_ll[roi_labels == key] = labels[key]
-    # print(roi_ll[max_el])
-    from helpers import iou_calc
 
-    print(gt_boxes)
+    # roi_ll = roi_ll[max_el]
+    # roi_ll = [roi_ll] if isinstance(roi_ll, str) else roi_ll
 
-    ious = iou_calc(gt_boxes.unsqueeze(0), roi["boxes"])
-
-    max_elements = []
-    for item in ious:
-        max_el = torch.sort(item * 100, dim=0, descending=True)[1][:1]
-        max_elements.append(max_el.item())
-
+    font = get_path("fonts") / "Roboto_SemiCondensed-Medium.ttf"
+    print(font.resolve())
     drawn_boxes = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
-        roi["boxes"][max_elements].detach().cpu(),
-        # labels=roi_ll[max_el],
+        roi["boxes"][max_el].detach().cpu(),
+        labels=labels[max_el],
         colors="red",
         width=1,
+        font=font,
+        font_size=24,
     )
     img_with_boxes = F.to_pil_image(drawn_boxes)
 
@@ -89,7 +127,7 @@ def video_test():
 
     cv.namedWindow("Video", cv.WINDOW_NORMAL)
 
-    cv.resizeWindow("Video", 1200, 800)  # width x height
+    cv.resizeWindow("Video", 1200, 800)
 
     while cap.isOpened():
         ret, frame = cap.read()

@@ -103,30 +103,9 @@ class VOCDataset(Dataset):
                 x1 = im_w - x1 - w
                 x2 = x1 + w
                 box_cords[idx] = torch.as_tensor([x1, y1, x2, y2])
-        # return im_tensor, targets, im_info["filename"]
         return {
             "image": im_tensor,
             "cords": box_cords,
             "labels": self.idx2label,
             "gt_labels": categories,
         }
-
-
-# batch = VOCDataset(
-#     "train", "VOCdevkit/VOC2012/JPEGImages", "VOCdevkit/VOC2012/Annotations"
-# )[0]
-# from torch.utils.data import DataLoader
-
-# traning_data = DataLoader(
-#     VOCDataset(
-#         "train", "VOCdevkit/VOC20012/JPEGImages", "VOCdevkit/VOC20012/Annotations"
-#     ),
-#     batch_size=1,
-#     shuffle=True,
-# )
-# image, gt_boxes, labels, gt_labels = (
-#     batch["image"],
-#     batch["cords"],
-#     batch["labels"],
-#     batch["gt_labels"],
-# )

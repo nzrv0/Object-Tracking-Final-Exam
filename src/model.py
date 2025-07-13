@@ -50,8 +50,8 @@ class FasterRcnn(nn.Module):
                 for s, s_orig in zip(image.shape[-2:], (h, w))
             ]
             ratio_height, ratio_width = ratios
-            gt_boxes = gt_boxes.unsqueeze(0)
-
+            # print(gt_boxes, gt_boxes.unbind(1))
+            # gt_boxes = gt_boxes.unsqueeze(0)
             xmin, ymin, xmax, ymax = gt_boxes.unbind(1)
             xmin = xmin * ratio_width
             xmax = xmax * ratio_width
@@ -66,13 +66,11 @@ class FasterRcnn(nn.Module):
         gt_labels=None,
         gt_boxes=None,
     ):
-        old_shape = image.shape[-2:]
-
-        if self.training:
-            image, gt_boxes = self.normalize(image, gt_boxes)
+        # old_shape = image.shape[-2:]
+        # if self.training:
+        #     image, gt_boxes = self.normalize(image, gt_boxes)
         # else:
         #     image, _ = self.normalize(image, None)
-
         features = self.feature_extractor(image)
         anchors = generate_anchor_maps(image, features)
 

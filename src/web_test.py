@@ -1,8 +1,9 @@
 from model import FasterRcnn
-from pathlib import Path
+from helpers import get_path
 
 import streamlit as st
 from PIL import Image
+import numpy as np
 
 import torch
 from torchvision.utils import draw_bounding_boxes
@@ -19,6 +20,7 @@ def load_model():
     model = FasterRcnn()
 
     model_path = hf_hub_download(repo_id=repo_id, filename=filename)
+
     model.load_state_dict(
         torch.load(
             model_path,
@@ -39,7 +41,39 @@ def show_boxes(image_path):
     model = load_model()
     rpn, roi = model(image)
 
-    max_el = torch.sort(roi["scores"] * 100, dim=0, descending=False)[1][:5]
+    labels = [
+        "person",
+        "bird",
+        "cat",
+        "cow",
+        "dog",
+        "horse",
+        "sheep",
+        "aeroplane",
+        "bicycle",
+        "boat",
+        "bus",
+        "car",
+        "motorbike",
+        "train",
+        "bottle",
+        "chair",
+        "diningtable",
+        "pottedplant",
+        "sofa",
+        "tvmonitor",
+        "background",
+    ]
+    labels = sorted(labels)
+
+    max_el = torch.where(roi["scores"] * 100 >= 10)
+
+    roi_labels = roi["labels"].detach().cpu().numpy()
+    labels = np.array(labels)
+    labels = labels[roi_labels]
+    labels = [labels] if isinstance(labels, str) else labels
+
+    font = get_path("fonts") / "Roboto_SemiCondensed-Medium.ttf"
 
     rpn_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
@@ -50,8 +84,11 @@ def show_boxes(image_path):
     roi_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
         roi["boxes"].detach().cpu(),
+        labels=labels,
         colors="red",
-        width=1,
+        width=2,
+        font=font.resolve(),
+        font_size=24,
     )
     rpn_head = F.to_pil_image(rpn_head)
     roi_head = F.to_pil_image(roi_head)
