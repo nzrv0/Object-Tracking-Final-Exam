@@ -87,7 +87,7 @@ def show_boxes(image_path):
         labels=labels,
         colors="red",
         width=2,
-        font=font.resolve(),
+        font=font,
         font_size=24,
     )
     rpn_head = F.to_pil_image(rpn_head)
