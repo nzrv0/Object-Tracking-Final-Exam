@@ -70,11 +70,13 @@ def show_boxes(image_path):
 
     roi_labels = roi["labels"].detach().cpu().numpy()
     labels = np.array(labels)
-    labels = labels[roi_labels]
+    labels = labels[roi_labels][max_el]
     labels = [labels] if isinstance(labels, str) else labels
 
-    font = "https://object-tracking-final-exam.streamlit.app/app/static/Roboto_SemiCondensed-Medium.ttf"
+    import os
 
+    font = os.path.abspath("static/Roboto_SemiCondensed-Medium.ttf")
+    
     rpn_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
         rpn["proposals"].detach().cpu(),
@@ -83,7 +85,7 @@ def show_boxes(image_path):
     )
     roi_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
-        roi["boxes"].detach().cpu(),
+        roi["boxes"][[max_el]].detach().cpu(),
         labels=labels,
         colors="red",
         width=2,
