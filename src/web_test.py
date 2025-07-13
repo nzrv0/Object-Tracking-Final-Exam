@@ -75,14 +75,15 @@ def show_boxes(image_path):
 
     import os
 
-    font = os.path.abspath("static/Roboto_SemiCondensed-Medium.ttf")
-    
+    font = os.path.abspath("app/static/Roboto_SemiCondensed-Medium.ttf")
+
     rpn_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
         rpn["proposals"].detach().cpu(),
         colors="blue",
         width=1,
     )
+
     roi_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
         roi["boxes"][[max_el]].detach().cpu(),
