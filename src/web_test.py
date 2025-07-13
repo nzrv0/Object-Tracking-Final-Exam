@@ -89,9 +89,9 @@ def show_boxes(image_path):
         roi["boxes"][[max_el]].detach().cpu(),
         labels=labels,
         colors="red",
-        width=2,
+        width=4,
         font=font,
-        font_size=24,
+        font_size=48,
     )
     rpn_head = F.to_pil_image(rpn_head)
     roi_head = F.to_pil_image(roi_head)
