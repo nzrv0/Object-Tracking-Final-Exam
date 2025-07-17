@@ -70,7 +70,7 @@ def show_boxes(image_path):
 
     roi_labels = roi["labels"].detach().cpu().numpy()
     labels = np.array(labels)
-    labels = labels[roi_labels][max_el]
+    labels = labels[roi_labels]
     labels = [labels] if isinstance(labels, str) else labels
 
     import os
@@ -85,7 +85,7 @@ def show_boxes(image_path):
 
     roi_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
-        roi["boxes"][[max_el]].detach().cpu(),
+        roi["boxes"].detach().cpu(),
         labels=labels,
         colors="red",
         width=4,
