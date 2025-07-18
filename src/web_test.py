@@ -76,17 +76,21 @@ def show_boxes(image_path):
     import os
 
     font = os.path.abspath("src/static/Roboto_SemiCondensed-Medium.ttf")
+
     rpn_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
         rpn["proposals"].detach().cpu(),
         colors="blue",
         width=1,
     )
+    text_labels = []
+    for item in list(zip(labels, roi["scores"].detach().numpy())):
+        text_labels.append(f"{item[0].item()} {(item[1].item() * 100):.4f}")
 
     roi_head = draw_bounding_boxes(
         image.squeeze().detach().cpu(),
         roi["boxes"].detach().cpu(),
-        labels=labels,
+        labels=text_labels,
         colors="red",
         width=4,
         font=font,
